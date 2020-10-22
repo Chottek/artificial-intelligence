@@ -1,79 +1,107 @@
-import cv2
 import sys
-import numpy as np
+import cv2
+
+max_value = 255
+max_value_H = 360 // 2
+low_H = 0
+low_S = 0
+low_V = max_value // 2
+high_H = max_value_H
+high_S = max_value
+high_V = max_value
+
+WINDOW_NAME = 'HSVGetter'
+DEFAULT_WIDTH = 320
+DEFAULT_HEIGHT = 200
+counter = 0
+
+def on_low_H_thresh_trackbar(val):
+    global low_H
+    global high_H
+    low_H = val
+    low_H = min(high_H - 1, low_H)
+    cv2.setTrackbarPos("L Hue", WINDOW_NAME, low_H)
 
 
-def nothing(x):
-    pass
+def on_high_H_thresh_trackbar(val):
+    global low_H
+    global high_H
+    high_H = val
+    high_H = max(high_H, low_H + 1)
+    cv2.setTrackbarPos("H Hue", WINDOW_NAME, high_H)
 
 
-width = 320
-height = 200
+def on_low_S_thresh_trackbar(val):
+    global low_S
+    global high_S
+    low_S = val
+    low_S = min(high_S - 1, low_S)
+    cv2.setTrackbarPos("L Sat", WINDOW_NAME, low_S)
 
-print('Number of arguments: ', len(sys.argv))
 
-if (len(sys.argv)) == 3:
-    width = sys.argv[1]
-    height = sys.argv[2]
-    print('Setting width to ' + width + ' and height to ' + height)
-else:
-    print('Dimensions set by default to 320x200')
+def on_high_S_thresh_trackbar(val):
+    global low_S
+    global high_S
+    high_S = val
+    high_S = max(high_S, low_S + 1)
+    cv2.setTrackbarPos("H Sat", WINDOW_NAME, high_S)
+
+
+def on_low_V_thresh_trackbar(val):
+    global low_V
+    global high_V
+    low_V = val
+    low_V = min(high_V - 1, low_V)
+    cv2.setTrackbarPos("L Val", WINDOW_NAME, low_V)
+
+
+def on_high_V_thresh_trackbar(val):
+    global low_V
+    global high_V
+    high_V = val
+    high_V = max(high_V, low_V + 1)
+    cv2.setTrackbarPos("H Val", WINDOW_NAME, high_V)
+
+
+cv2.namedWindow(WINDOW_NAME)
+cv2.createTrackbar("L Hue", WINDOW_NAME, low_H, max_value_H, on_low_H_thresh_trackbar)
+cv2.createTrackbar("H Hue", WINDOW_NAME, high_H, max_value_H, on_high_H_thresh_trackbar)
+cv2.createTrackbar("L Sat", WINDOW_NAME, low_S, max_value, on_low_S_thresh_trackbar)
+cv2.createTrackbar("H Sat", WINDOW_NAME, high_S, max_value, on_high_S_thresh_trackbar)
+cv2.createTrackbar("L Val", WINDOW_NAME, low_V, max_value, on_low_V_thresh_trackbar)
+cv2.createTrackbar("H Val", WINDOW_NAME, high_V, max_value, on_high_V_thresh_trackbar)
 
 vid = cv2.VideoCapture(0)
 
-counter = 0
-
-# Tworzenie okienka z suwaczkami
-cv2.namedWindow("HSVGetter")
-cv2.createTrackbar("L - H", "HSVGetter", 0, 179, nothing)
-cv2.createTrackbar("L - S", "HSVGetter", 0, 255, nothing)
-cv2.createTrackbar("L - V", "HSVGetter", 0, 255, nothing)
-cv2.createTrackbar("U - H", "HSVGetter", 179, 179, nothing)
-cv2.createTrackbar("U - S", "HSVGetter", 255, 255, nothing)
-cv2.createTrackbar("U - V", "HSVGetter", 255, 255, nothing)
-
 while True:
-
     ret, frame = vid.read()
-    flip = cv2.flip(frame, 1)
-    blurred = cv2.GaussianBlur(flip, (5, 5), 1)
-    resized = cv2.resize(blurred, (int(width), int(height)))
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    l_h = cv2.getTrackbarPos("L - H", "HSVGetter")
-    l_s = cv2.getTrackbarPos("L - S", "HSVGetter")
-    l_v = cv2.getTrackbarPos("L - V", "HSVGetter")
-    u_h = cv2.getTrackbarPos("U - H", "HSVGetter")
-    u_s = cv2.getTrackbarPos("U - S", "HSVGetter")
-    u_v = cv2.getTrackbarPos("U - V", "HSVGetter")
+    frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
+    flipped = cv2.flip(frame, 1)
+    hsv = cv2.cvtColor(flipped, cv2.COLOR_BGR2HSV)
+    blur = cv2.GaussianBlur(hsv, (5, 5), cv2.BORDER_DEFAULT)
 
-    lower_range = np.array([l_h, l_s, l_v])
-    upper_range = np.array([u_h, u_s, u_v])
+    range1 = "Low: {}, {}, {}".format(low_H, low_S, low_V)
+    range2 = "High: {}, {}, {}".format(high_H, high_S, high_V)
+    image = cv2.putText(blur, range1, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
+    image = cv2.putText(blur, range2, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
 
-    mask = cv2.inRange(hsv, lower_range, upper_range)
+    if (len(sys.argv)) == 3:
+        window = cv2.resize(blur, (int(sys.argv[1]), int(sys.argv[2])))
+    else:
+        window = cv2.resize(blur, (DEFAULT_WIDTH, DEFAULT_HEIGHT))
 
-    # You can also visualize the real part of the target color (Optional)
-    res = cv2.bitwise_and(frame, frame, mask)
-
-    # Converting the binary mask to 3 channel image, this is just so
-    # we can stack it with the others
-    mask_2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-
-    # stack the mask, orginal frame and the filtered result
-    stacked = np.hstack((mask_2, hsv, res))
-
-    cv2.imshow('Suwaczki', cv2.resize(stacked, None, fx=0.9, fy=0.9))
+    # Display the final image:
+    cv2.imshow("Current", window)
+    cv2.imshow(WINDOW_NAME, frame_threshold)
 
     key = cv2.waitKey(1)
-
     if key == 27:
         break
-
     if key == ord('x'):
         img_name = "scrshot_{}.png".format(counter)
         cv2.imwrite(img_name, hsv)
-        counter += 1
 
 vid.release()
-
 cv2.destroyAllWindows()
