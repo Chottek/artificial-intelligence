@@ -1,6 +1,27 @@
 import sys
 import cv2
 
+
+# Napisz program, który korzystając z OpenCV wykona następujące
+# rzeczy (w pętli):
+#
+# Pobierze z kamery klatkę obrazu
+
+# Rozmyje obraz za pomocą rozmycia Gaussa(parametry wybierz sobie takie, jak Tobie wydadzą się odpowiednie)
+
+# Przeskaluje ją do rozmiaru takiego, jak podany w argumencie wywołania Twojego programu(czyli będzie można
+# z linii komend powiedzieć jak wielki ma być obrazek).Jeśli nie podano argumentów, niech będzie to 320 x200
+
+# Przekształci przestrzeń barw do formatu HSV(niech to pojawia się w okienku)
+
+# Dokona operacji inRange dla zadanych zakresów - zakresy niech będą podane za pomocą suwaków.(to będzie drugie okienko)
+# Wartości zakresów niech pojawiają się w okienku z obrazem w wersji HSV
+
+# Jeżeli użytkownik naciśnie klawisz < x > to zostanie zrobione "zdjęcie" wybranego przez użytkownika fragmentu
+# obrazu - wybieramy ROI.To zdjęcie niech zostanie zapisane na dysk pod nazwą taką, jak sobie wymyślisz.
+# Podpowiem, że można skorzystać z imwrite
+
+
 max_value = 255
 max_value_H = 360 // 2
 low_H = 0
@@ -102,6 +123,7 @@ while True:
     if key == ord('x'):
         img_name = "scrshot_{}.png".format(counter)
         cv2.imwrite(img_name, hsv)
+        counter += 1
 
 vid.release()
 cv2.destroyAllWindows()
