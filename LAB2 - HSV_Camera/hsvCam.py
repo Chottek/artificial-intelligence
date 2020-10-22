@@ -1,7 +1,6 @@
 import sys
 import cv2
 
-
 # Napisz program, który korzystając z OpenCV wykona następujące
 # rzeczy (w pętli):
 #
@@ -123,6 +122,10 @@ while True:
     if key == ord('x'):
         img_name = "scrshot_{}.png".format(counter)
         cv2.imwrite(img_name, hsv)
+        im = cv2.imread("scrshot_{}.png".format(counter))
+        r = cv2.selectROI(im)
+        imCrop = im[int(r[1]):int(r[1] + r[3]), int(r[0]):int(r[0] + r[2])]
+        cv2.imwrite(img_name, imCrop)
         counter += 1
 
 vid.release()
