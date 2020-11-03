@@ -15,22 +15,27 @@ while True:
     edged = cv2.Canny(gray, 75, 200)
 
     contours, hierarchy = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-    scr = None
 
     for c in contours:
         area = cv2.contourArea(c)
 
-        if area > 500:
+        scr = None
+
+        if area > 800:
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.02 * peri, True)
 
             if len(approx) == 4:
                 scr = approx
                 break
+            else:
+                continue
 
-    cv2.drawContours(frame, [scr], -1, (0, 0, 255), 2)
-    cv2.imshow("Contour", edged)
-    cv2.imshow("Frame", frame)
+    if scr is not None:
+        cv2.drawContours(frame, [scr], -1, (0, 0, 255), 2)
+
+    cv2.imshow("ContourSeeker", edged)
+    cv2.imshow("RealView", frame)
 
     key = cv2.waitKey(1)
     if key == 27:
