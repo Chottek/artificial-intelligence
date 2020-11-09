@@ -68,6 +68,9 @@ while True:
     ret, frame = video.read()
 
     frame = cv2.resize(frame, (680, 400))
+    outline = frame
+
+    ratio = frame.shape[0] / 500.0
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -92,7 +95,7 @@ while True:
                 continue
 
     if scr is not None:
-        cv2.drawContours(frame, [scr], -1, (0, 0, 255), 5)
+        cv2.drawContours(outline, [scr], -1, (0, 0, 255), 5)
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -112,13 +115,14 @@ while True:
             a = cv2.approxPolyDP(contour, 0.02 * p, True)
 
     if scr is not None and a is not None:
-        cv2.drawContours(frame, [a], -1, (0, 0, 255), 5)
+        cv2.drawContours(outline, [a], -1, (0, 0, 255), 5)
         img_name = "scrshot_{}.png".format(datetime.today().strftime('%Y%m%d%H%M%S'))
-        warped = transform(frame, #TODO: DO STH HERE! )
+        warped = transform(frame, scr.reshape(4, 2) * ratio)
         cv2.imwrite(img_name, warped)
         # im = cv2.imread("scrshot_{}.png".format(counter))
 
     cv2.imshow("ContourSeeker", edged)
+    cv2.imshow("Outline", outline)
     cv2.imshow("RealView", frame)
 
     key = cv2.waitKey(1)
