@@ -20,6 +20,14 @@ public class GraphDrawer extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        g2d.setColor(Color.BLUE);
+        g2d.drawString("X:", getWidth() - 40, 15);
+        g2d.fillRoundRect(getWidth() - 20, 10, 5, 5, 2, 2);
+
+        g2d.setColor(Color.YELLOW);
+        g2d.drawString("Y:", getWidth() - 40, 35);
+        g2d.fillRoundRect(getWidth() - 20, 30, 5, 5, 2, 2);
+
         int xAxis = 0;
         int yAxis = 0;
 
