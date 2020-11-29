@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Main {
 
     private static final Scanner get = new Scanner(System.in);
+    private static final Controller c = new Controller();
 
     public static void main(String[] args) {
         String s = "";
@@ -10,7 +11,8 @@ public class Main {
             s = get.next();
 
             if(isNumeric(s)){
-
+                c.setNumber(Integer.parseInt(s));
+                c.execute();
             }
         }
 
