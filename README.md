@@ -1,0 +1,3 @@
+# artificial-intelligence
+
+NAI Labs going here one by one, mostly some Python OpenCV, Metaheuristics, Optimisation Algorithms and so on...
