@@ -1,22 +1,26 @@
+import function.Beale;
+import function.IFunction;
+
 import java.util.Random;
 
 public class Society {
 
-    private Individual[] individuals;
-    private double fittestNumber;
-    private final int geneLength = 40;
+    private final IFunction f = new Beale();    //Optimisation function used in calculating fitness
 
-    public Society(int initialSize){
+    private Individual[] individuals;           //Individuals array
+    private double fittestNumber;               //Value of the fittest Individual
+
+    public Society(int initialSize, int geneLength) {
         this.fittestNumber = 0;
 
-        initPopulation(initialSize);
+        initPopulation(initialSize, geneLength);   //Initializing population in constructor
     }
 
-    public Individual getFittestIndividual(){
+    public Individual getFittestIndividual() {
         double fittest = -1D;
         int index = 0;
 
-        for(int i = 0; i < individuals.length; i++){
+        for (int i = 0; i < individuals.length; i++) {
             if (fittest <= individuals[i].getFitness()) {
                 fittest = individuals[i].getFitness();
                 index = i;
@@ -41,7 +45,7 @@ public class Society {
         return individuals[maxFit2];
     }
 
-    public int getLeastFitIndex(){
+    public int getLeastFitIndex() {
         double minFitVal = Double.MAX_VALUE;
         int minFitIndex = 0;
         for (int i = 0; i < individuals.length; i++) {
@@ -53,15 +57,15 @@ public class Society {
         return minFitIndex;
     }
 
-    private void initPopulation(int initialSize){
+    private void initPopulation(int initialSize, int geneLength) {
         Random rand = new Random();
         individuals = new Individual[initialSize];
-        for(int j = 0; j < initialSize; j++){
+        for (int j = 0; j < initialSize; j++) {
             int[] genes = new int[geneLength];
             for (int k = 0; k < geneLength; k++) {
                 genes[k] = rand.nextInt(2);
             }
-            individuals[j] = new Individual(genes);
+            individuals[j] = new Individual(genes, f);
         }
     }
 
@@ -69,11 +73,4 @@ public class Society {
         return individuals;
     }
 
-    public double getFittestNumber(){
-        return fittestNumber;
-    }
-
-    public int getGeneLength() {
-        return geneLength;
-    }
 }

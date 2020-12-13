@@ -1,12 +1,11 @@
 import java.util.Random;
 
-import static java.lang.StrictMath.pow;
-
 public class Genetics {
 
     private final Random rand;
 
     private static final int SOCIETY_SIZE = 10;         //Initial society size
+    private static final int GENE_LENGTH = 50;          //Initial gene length
     private Individual fittest;                         //First fittest
     private Individual fittest_2;                       //Second fittest
     private int generation;                             //Generation
@@ -15,7 +14,7 @@ public class Genetics {
 
     public Genetics() {
         rand = new Random();
-        s = new Society(SOCIETY_SIZE);
+        s = new Society(SOCIETY_SIZE, GENE_LENGTH);
     }
 
     public void performSelection() {
@@ -44,10 +43,11 @@ public class Genetics {
     }
 
     public void addFittestOffspring() {
-        //Replace least fittest individual from most fittest offspring
-        s.getIndividuals()[s.getLeastFitIndex()] = getFittestOffspring();
+        s.getIndividuals()[s.getLeastFitIndex()] = getFittestOffspring();  //Replace least fit individual from the fittest offspring
     }
 
+
+    //Getters
 
     public void incrementGeneration() {
         this.generation++;

@@ -32,11 +32,11 @@ public class GenUtils {
             tempY[i] = arr[i + arr.length / 2];
         }
 
-        return new double[]{ toDecimal(tempX, arr.length) / pow(10, accuracy), toDecimal(tempY, arr.length) / pow(10, accuracy)};
+        return new double[]{toDecimal(tempX, arr.length) / pow(10, accuracy), toDecimal(tempY, arr.length) / pow(10, accuracy)};
     }
 
     public static double getFitness(double[] fenotype, IFunction f) {
-        return Math.pow(abs(0 - f.count(fenotype[0], fenotype[1])), -1);
+        return pow(abs(0 - f.count(fenotype[0], fenotype[1])), -1);
     }
 
 }
