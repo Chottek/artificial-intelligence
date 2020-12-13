@@ -3,7 +3,7 @@ package util;
 import function.IFunction;
 
 import static java.lang.Math.abs;
-import static java.lang.StrictMath.pow;
+import static java.lang.Math.pow;
 
 public class GenUtils {
 
