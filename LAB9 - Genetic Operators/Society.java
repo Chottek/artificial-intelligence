@@ -3,8 +3,8 @@ import java.util.Random;
 public class Society {
 
     private Individual[] individuals;
-    private int fittestNumber;
-    private final int geneLength = 5;
+    private double fittestNumber;
+    private final int geneLength = 40;
 
     public Society(int initialSize){
         this.fittestNumber = 0;
@@ -13,7 +13,7 @@ public class Society {
     }
 
     public Individual getFittestIndividual(){
-        int fittest = -1;
+        double fittest = -1D;
         int index = 0;
 
         for(int i = 0; i < individuals.length; i++){
@@ -42,7 +42,7 @@ public class Society {
     }
 
     public int getLeastFitIndex(){
-        int minFitVal = 6;
+        double minFitVal = Double.MAX_VALUE;
         int minFitIndex = 0;
         for (int i = 0; i < individuals.length; i++) {
             if (minFitVal >= individuals[i].getFitness()) {
@@ -69,7 +69,7 @@ public class Society {
         return individuals;
     }
 
-    public int getFittestNumber(){
+    public double getFittestNumber(){
         return fittestNumber;
     }
 

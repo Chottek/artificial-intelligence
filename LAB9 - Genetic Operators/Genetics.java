@@ -1,5 +1,7 @@
 import java.util.Random;
 
+import static java.lang.StrictMath.pow;
+
 public class Genetics {
 
     private final Random rand;
@@ -11,25 +13,25 @@ public class Genetics {
 
     private final Society s;                            //Init society (population) here
 
-    public Genetics(){
+    public Genetics() {
         rand = new Random();
         s = new Society(SOCIETY_SIZE);
     }
 
-    public void performSelection(){
+    public void performSelection() {
         fittest = s.getFittestIndividual();
         fittest_2 = s.getSecondFittestIndividual();
     }
 
-    public void performCrossOver(){
-        for(int i = 0; i < rand.nextInt(s.getIndividuals()[0].getGenes().length); i++){
+    public void performCrossOver() {
+        for (int i = 0; i < rand.nextInt(s.getIndividuals()[0].getGenes().length); i++) {
             int temp = fittest.getGenes()[i];
             fittest.getGenes()[i] = fittest_2.getGenes()[i];
             fittest_2.getGenes()[i] = temp;
         }
     }
 
-    public void performMutation(){
+    public void performMutation() {
         int mutationIndex = rand.nextInt(s.getIndividuals()[0].getGenes().length);
         fittest.getGenes()[mutationIndex] = (fittest.getGenes()[mutationIndex] == 0) ? 1 : 0;
 
@@ -37,7 +39,7 @@ public class Genetics {
         fittest_2.getGenes()[mutationIndex] = (fittest_2.getGenes()[mutationIndex] == 0) ? 1 : 0;
     }
 
-    public Individual getFittestOffspring(){
+    public Individual getFittestOffspring() {
         return (fittest.getFitness() > fittest_2.getFitness()) ? fittest : fittest_2;
     }
 
@@ -47,7 +49,7 @@ public class Genetics {
     }
 
 
-    public void incrementGeneration(){
+    public void incrementGeneration() {
         this.generation++;
     }
 

@@ -1,3 +1,6 @@
+import function.Beale;
+import util.GenUtils;
+
 public class Individual {
 
     private final int[] genes;
@@ -6,20 +9,12 @@ public class Individual {
         this.genes = genes;
     }
 
-    public int getFitness(){
-        int fitness = 0;
-
-        for (int gene : genes) {
-            if (gene == 1) {
-                fitness++;
-            }
-        }
-        return fitness;
+    public double getFitness(){
+        return GenUtils.getFitness(GenUtils.toPhenotype(genes, 5), new Beale());
     }
 
     public int[] getGenes(){
         return genes;
     }
-
 
 }
