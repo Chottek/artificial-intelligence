@@ -1,4 +1,3 @@
-import function.Beale;
 import function.IFunction;
 import util.GenUtils;
 
