@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Random;
 
 public class Genetics {
@@ -6,8 +7,8 @@ public class Genetics {
 
     private static final int SOCIETY_SIZE = 10;         //Initial society size
     private static final int GENE_LENGTH = 50;          //Initial gene length
-    private Individual fittest;                         //First fittest
-    private Individual fittest_2;                       //Second fittest
+    private Individual iOne;                            //First and second individual
+    private Individual iTwo;                            //Second fittest
     private int generation;                             //Generation
 
     private final Society s;                            //Init society (population) here
@@ -17,29 +18,30 @@ public class Genetics {
         s = new Society(SOCIETY_SIZE, GENE_LENGTH);
     }
 
-    public void performSelection() {
-        fittest = s.getFittestIndividual();
-        fittest_2 = s.getSecondFittestIndividual();
+    public void performSelection() {//TODO: Implement tournament selection
+        Individual[] inds = s.performTournamentSelection(6);
+        iOne = inds[0];
+        iTwo = inds[1];
     }
 
     public void performCrossOver() {
         for (int i = 0; i < rand.nextInt(s.getIndividuals()[0].getGenes().length); i++) {
-            int temp = fittest.getGenes()[i];
-            fittest.getGenes()[i] = fittest_2.getGenes()[i];
-            fittest_2.getGenes()[i] = temp;
+            int temp = iOne.getGenes()[i];
+            iOne.getGenes()[i] = iTwo.getGenes()[i];
+            iTwo.getGenes()[i] = temp;
         }
     }
 
     public void performMutation() {
         int mutationIndex = rand.nextInt(s.getIndividuals()[0].getGenes().length);
-        fittest.getGenes()[mutationIndex] = (fittest.getGenes()[mutationIndex] == 0) ? 1 : 0;
+        iOne.getGenes()[mutationIndex] = (iOne.getGenes()[mutationIndex] == 0) ? 1 : 0;
 
         mutationIndex = rand.nextInt(s.getIndividuals()[0].getGenes().length);
-        fittest_2.getGenes()[mutationIndex] = (fittest_2.getGenes()[mutationIndex] == 0) ? 1 : 0;
+        iTwo.getGenes()[mutationIndex] = (iTwo.getGenes()[mutationIndex] == 0) ? 1 : 0;
     }
 
     public Individual getFittestOffspring() {
-        return (fittest.getFitness() > fittest_2.getFitness()) ? fittest : fittest_2;
+        return (iOne.getFitness() > iTwo.getFitness()) ? iOne : iTwo;
     }
 
     public void addFittestOffspring() {
@@ -57,7 +59,4 @@ public class Genetics {
         return generation;
     }
 
-    public Society getSociety() {
-        return s;
-    }
 }

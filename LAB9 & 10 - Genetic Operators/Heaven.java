@@ -8,7 +8,6 @@ public class Heaven { //Takie heheszki że "Niechaj się dzieje wola Nieba, z Ni
 
     private static final Logger EYE = LoggerFactory.getLogger(Heaven.class); //The eye of truth is watching you
 
-
     public void ruleTheWorld(int maxGenerations) {
         Random coincidence = new Random();
         Genetics god = new Genetics();                  //Init genetic algorithm

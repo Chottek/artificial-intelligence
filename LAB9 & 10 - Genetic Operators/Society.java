@@ -1,49 +1,41 @@
 import function.Beale;
 import function.IFunction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Society {
 
+    private final Random rand = new Random();
+
     private final IFunction f = new Beale();    //Optimisation function used in calculating fitness
 
     private Individual[] individuals;           //Individuals array
-    private double fittestNumber;               //Value of the fittest Individual
 
     public Society(int initialSize, int geneLength) {
-        this.fittestNumber = 0;
-
         initPopulation(initialSize, geneLength);   //Initializing population in constructor
     }
 
-    public Individual getFittestIndividual() {
-        double fittest = -1D;
-        int index = 0;
+    public Individual[] performTournamentSelection(int max){
+        List<Individual> inds = new ArrayList<>();
+        List<Individual> winners = new ArrayList<>();
 
-        for (int i = 0; i < individuals.length; i++) {
-            if (fittest <= individuals[i].getFitness()) {
-                fittest = individuals[i].getFitness();
-                index = i;
-            }
+        for(int i = 0; i < max; i++){
+            inds.add(individuals[rand.nextInt(individuals.length)]);
         }
 
-        fittestNumber = individuals[index].getFitness();
-        return individuals[index];
+        for(int j = 0; j < max / 2; j++){
+            Individual i1 = inds.get(j);
+            Individual i2 = inds.get(j+1);
+
+            winners.add(i1.getFitness() < i2.getFitness() ? i2 : i1);
+        }
+
+
+        return new Individual[]{ winners.get(rand.nextInt(winners.size())), winners.get(rand.nextInt(winners.size()))};
     }
 
-    public Individual getSecondFittestIndividual() {
-        int maxFit1 = 0;
-        int maxFit2 = 0;
-        for (int i = 0; i < individuals.length; i++) {
-            if (individuals[i].getFitness() > individuals[maxFit1].getFitness()) {
-                maxFit2 = maxFit1;
-                maxFit1 = i;
-            } else if (individuals[i].getFitness() > individuals[maxFit2].getFitness()) {
-                maxFit2 = i;
-            }
-        }
-        return individuals[maxFit2];
-    }
 
     public int getLeastFitIndex() {
         double minFitVal = Double.MAX_VALUE;
