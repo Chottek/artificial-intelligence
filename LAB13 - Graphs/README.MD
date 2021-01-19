@@ -1,4 +1,4 @@
-#Lab12 - Graphs
+#Lab13 - Graphs
 
 - Program generates a simple Graph based on Node relations
 - After initialization, output code is copied to clipboard, so it can 
