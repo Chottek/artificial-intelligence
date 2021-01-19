@@ -4,6 +4,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         Graph g = new Graph(NODE_COUNT);
+        System.out.println(g.toString());
     }
 
 }

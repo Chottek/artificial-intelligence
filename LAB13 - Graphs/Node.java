@@ -1,23 +1,20 @@
 public class Node {
 
-    private Node previous;
     private Node next;
 
     private final String name;
 
-    public Node(Node previous, Node next, String name) {
-        this.previous = previous;
-        this.next = next;
+    public Node( Node next, String name) {
         this.name = name;
+        this.next = next;
     }
 
     @Override
-    public String toString(){
-        return this.name;
-    }
-
-    public Node getPrevious() {
-        return previous;
+    public String toString() {
+        return "Node {" +
+                "name='" + name + '\'' +
+                ", next=" + next.getName() +
+                '}';
     }
 
     public Node getNext() {
@@ -26,10 +23,6 @@ public class Node {
 
     public String getName() {
         return name;
-    }
-
-    public void setPrevious(Node previous) {
-        this.previous = previous;
     }
 
     public void setNext(Node next) {

@@ -16,25 +16,29 @@ public class Graph {
     }
 
     private void initNodes(int nodeCount){
-        IntStream.range(0, nodeCount).mapToObj(i -> new Node(null, null, String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
-        for(int i = 0; i < nodeCount - 1; i++){
-            if(i == 0){
-                nodeList.get(i).setPrevious(nodeList.get(nodeCount - 1));
-            }else{
-                nodeList.get(i).setPrevious(nodeList.get(i - 1));
-            }
-            nodeList.get(i).setNext(nodeList.get(i + 1));
-        }
-        LOG.info("Inited {} Nodes", nodeList.size());
-    }
+        IntStream.range(0, nodeCount).mapToObj(i -> new Node(null, String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
+        IntStream.range(0, nodeCount - 1).forEach(i -> nodeList.get(i).setNext(nodeList.get(i + 1)));
+        nodeList.get(nodeList.size() - 1).setNext(nodeList.get(0));
 
-    public List<Node> getNodeList() {
-        return nodeList;
+        for(Node n : nodeList){
+            LOG.info(n.toString());
+        }
+
+        LOG.info("Inited {} Nodes", nodeList.size());
     }
 
     @Override
     public String toString(){
-        return "graph";
+        java.lang.StringBuilder sb = new java.lang.StringBuilder();
+        sb.append("digraph G {").append("\n").append("rankdir=LR;").append("\n");
+        for(Node n : nodeList){
+            sb.append(n.getName()).append("->").append(n.getNext().getName()).append("\n");
+        }
+        sb.append("}");
+
+        copyToClipBoard(sb.toString());
+        LOG.info("Coppied To ClipBoard!");
+        return sb.toString();
     }
 
     private void copyToClipBoard(String value){
