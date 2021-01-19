@@ -18,7 +18,7 @@ public class Graph {
 
     private void initNodes(int nodeCount, double[] distances){
         if(distances == null || distances.length < nodeCount){
-            LOG.error("Distances input is either null or not enough length to proceed, generating random array!");
+            LOG.error("Distances input is either null or not long enough to proceed, generating random array!");
             distances = initDistances(nodeCount);
         }
 
