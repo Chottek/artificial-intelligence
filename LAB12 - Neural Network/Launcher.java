@@ -32,5 +32,4 @@ public class Launcher {
         new Controller().run();
     }
 
-
 }
