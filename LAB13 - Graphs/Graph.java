@@ -1,9 +1,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Random;
-import java.util.stream.IntStream;
-
 public class Graph {
 
     private static final Logger LOG = LoggerFactory.getLogger(Graph.class);
@@ -45,8 +42,9 @@ public class Graph {
     }
 
     private double[] initDistances(int nodeCount){
-        Random rand = new Random();
-        return IntStream.range(0, nodeCount).mapToDouble(i -> round((rand.nextDouble() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE), 1)).toArray();
+        java.util.Random rand = new java.util.Random();
+        return java.util.stream.IntStream.range(0, nodeCount)
+                .mapToDouble(i -> round((rand.nextDouble() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE), 1)).toArray();
     }
 
     private double round (double value, int precision) {
@@ -59,7 +57,7 @@ public class Graph {
         java.lang.StringBuilder sb = new java.lang.StringBuilder();
         sb.append("digraph G {").append("\n").append("rankdir=LR;").append("\n");
         for(Node n : nodeList){
-            sb.append(n.getName()).append("->").append(n.getNext().getName()).append("\t[ label = \"")
+            sb.append(n.getName()).append(" -> ").append(n.getNext().getName()).append("\t[ label = \"")
                     .append(n.getDistanceToNext()).append("\" ]").append("\n");
         }
         sb.append("}");
