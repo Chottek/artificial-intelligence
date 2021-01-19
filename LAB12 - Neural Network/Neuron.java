@@ -1,19 +1,25 @@
 package pl.fox.crazyneurons;
 
-import static pl.fox.crazyneurons.util.NeuralMath.activate;
+import pl.fox.crazyneurons.util.Sigmoid;
+
+import java.util.stream.IntStream;
 
 public class Neuron {
 
-    private final int[] weights;
-    private final int bias;
+    private final java.util.List<Double> weights;
 
-    public Neuron(int[] weights, int bias) {
-        this.weights = weights;
-        this.bias = bias;
+    public Neuron(int weightSize) {
+        weights = new java.util.ArrayList<>();
+        initWeights(weightSize);
     }
 
-    public double calculateOutput(int[] values){
-        return activate(bias +
-                java.util.stream.IntStream.range(0, weights.length).mapToDouble(i -> weights[i] * values[i]).sum());
+    private void initWeights(int weightSize){
+        IntStream.range(0, weightSize).forEach(i -> weights.add(Math.random()));
     }
+
+    public double calculateOutput(java.util.List<Double> values){
+        return new Sigmoid().function( NeuralNetwork.BIAS +
+                IntStream.range(0, weights.size()).mapToDouble(i -> weights.get(i) * values.get(i)).sum());
+    }
+
 }
