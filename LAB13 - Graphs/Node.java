@@ -1,25 +1,32 @@
+
+
 public class Node {
+
+    private final String name;
 
     private Node previous;
     private Node next;
-    private final String name;
-
     private double distanceToNext;
 
-    public Node(Node previous, Node next, String name) {
+    private java.util.Map<Double, Node> connections; //Double as distance, Node as Node :)
+
+    public Node(String name) {
         this.name = name;
-        this.next = next;
-        this.previous = previous;
     }
 
     @Override
     public String toString() {
-        return "Node {" +
+        return Graph.isSimple ?
+                "Node {" +
                 "name='" + name + '\'' +
                 ", previous=" + previous.getName() +
                 ", next=" + next.getName() +
                 ", distance to next=" + distanceToNext +
-                '}';
+                '}' :
+                "Node {" +
+                 "name='" + name + '\'' +
+                 ", connections=" + getConnNames() +
+                 '}';
     }
 
     public Node getPrevious() {
@@ -48,5 +55,24 @@ public class Node {
 
     public void setDistanceToNext(double distanceToNext) {
         this.distanceToNext = distanceToNext;
+    }
+
+    //EXPERIMENTAL
+    public java.util.Map<Double, Node> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(java.util.Map<Double, Node> connections) {
+        this.connections = connections;
+    }
+
+    public String getConnNames(){
+        StringBuilder sb = new StringBuilder();
+        for(Node n : connections.values()){
+            sb.append(" (").append(n.getName()).append(" )");
+        }
+        sb.append("\n");
+
+        return sb.toString();
     }
 }

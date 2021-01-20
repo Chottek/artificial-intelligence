@@ -1,64 +1,101 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.IntStream;
+
 public class Graph {
 
     private static final Logger LOG = LoggerFactory.getLogger(Graph.class);
 
-    private static final double MIN_DISTANCE = 0.5D;
-    private static final double MAX_DISTANCE = 15.0D;
-
+    protected static final double MIN_DISTANCE = 0.5D;
+    protected static final double MAX_DISTANCE = 15.0D;
+    protected static final int MAX_CONNECTIONS = 3;
+    protected static final boolean isSimple = false;
 
     private final java.util.List<Node> nodeList;
 
-    public Graph(int nodeCount, double[] distances){
+    public Graph(int nodeCount, double[] distances) {
         nodeList = new java.util.LinkedList<>();
         initNodes(nodeCount, distances);
     }
 
-    private void initNodes(int nodeCount, double[] distances){
-        if(distances == null || distances.length < nodeCount){
+    private void initNodes(int nodeCount, double[] distances) {
+        if (distances == null || distances.length < nodeCount) {
             LOG.error("Distances input is either null or not long enough to proceed, generating random array!");
             distances = initDistances(nodeCount);
         }
 
         java.util.stream.IntStream.range(0, nodeCount)
-                .mapToObj(i -> new Node(null,null, String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
+                .mapToObj(i -> new Node(String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
 
-        java.util.stream.IntStream.range(0, nodeCount - 1)
-                .forEach(i -> nodeList.get(i).setNext(nodeList.get(i + 1)));   //Setting next node
+        if (isSimple) {
+            java.util.stream.IntStream.range(0, nodeCount - 1)
+                    .forEach(i -> nodeList.get(i).setNext(nodeList.get(i + 1)));   //Setting next node
 
-        java.util.stream.IntStream.iterate(nodeCount - 1, i -> i > 0, i -> i - 1)
-                .forEach(i -> nodeList.get(i).setPrevious(nodeList.get(i - 1))); //setting previous node
+            java.util.stream.IntStream.iterate(nodeCount - 1, i -> i > 0, i -> i - 1)
+                    .forEach(i -> nodeList.get(i).setPrevious(nodeList.get(i - 1))); //setting previous node
 
-        nodeList.get(nodeList.size() - 1).setNext(nodeList.get(0));
-        nodeList.get(0).setPrevious(nodeList.get(nodeList.size() - 1));
+            nodeList.get(nodeList.size() - 1).setNext(nodeList.get(0));
+            nodeList.get(0).setPrevious(nodeList.get(nodeList.size() - 1));
 
-        for(int i = 0; i < nodeList.size(); i++){
-            nodeList.get(i).setDistanceToNext(distances[i]);
+            for (int i = 0; i < nodeList.size(); i++) {
+                nodeList.get(i).setDistanceToNext(distances[i]);
+            }
+        } else {
+            java.util.Random rand = new java.util.Random();
+            java.util.Map<Double, Node> connMap;
+
+            for(Node n : nodeList){
+                connMap = new java.util.HashMap<>();
+                int connections = rand.nextInt(MAX_CONNECTIONS) + 1;
+
+                for(int i = 0; i < connections; i++){
+                    connMap.put(randomizeDouble(), nodeList.get(rand.nextInt(nodeList.size() - 1)));
+                }
+
+                n.setConnections(connMap);
+                LOG.info("{} -> {}", connMap.size(), n.getConnections().size());
+            }
+        }
+
+        for(Node n: nodeList){
+            LOG.info("Connections of {} : {}",n.getName(), n.getConnections().size());
         }
 
         LOG.info("Inited {} Nodes", nodeList.size());
     }
 
-    private double[] initDistances(int nodeCount){
-        java.util.Random rand = new java.util.Random();
+    private double[] initDistances(int nodeCount) {
         return java.util.stream.IntStream.range(0, nodeCount)
-                .mapToDouble(i -> round((rand.nextDouble() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE), 1)).toArray();
+                .mapToDouble(i -> randomizeDouble()).toArray();
     }
 
-    private double round (double value, int precision) {
+    private double randomizeDouble(){
+        java.util.Random rand = new java.util.Random();
+        return round((rand.nextDouble() * (MAX_DISTANCE - MIN_DISTANCE) + MIN_DISTANCE), 1);
+
+    }
+
+    private double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder();
         sb.append("digraph G {").append("\n").append("rankdir=LR;").append("\n");
-        for(Node n : nodeList){
-            sb.append(n.getName()).append(" -> ").append(n.getNext().getName()).append("\t[ label = \"")
-                    .append(n.getDistanceToNext()).append("\" ]").append("\n");
+        if (isSimple) {
+            for (Node n : nodeList) {
+                sb.append(n.getName()).append(" -> ").append(n.getNext().getName()).append("\t[ label = \"")
+                        .append(n.getDistanceToNext()).append("\" ]").append("\n");
+            }
+        }else{
+            for(Node n: nodeList){
+                for(Node s: n.getConnections().values()){
+                    sb.append(n.getName()).append(" -> ").append(s.getName()).append("\n");
+                }
+            }
         }
         sb.append("}");
 
@@ -68,7 +105,7 @@ public class Graph {
         return sb.toString();
     }
 
-    private void copyToClipboard(String value){
+    private void copyToClipboard(String value) {
         java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(value);
         java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
