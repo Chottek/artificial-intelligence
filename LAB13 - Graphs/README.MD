@@ -9,3 +9,11 @@ be pasted on site
 Here's the output from site: 
 
 ![Alt text](output.png?raw=true "Generated graph output")
+
+
+---
+Update: Added generation of multiple connections between Nodes 
+
+TODO: Optimize connections
+
+![Alt text](output1.png?raw=true "Generated graph output")
