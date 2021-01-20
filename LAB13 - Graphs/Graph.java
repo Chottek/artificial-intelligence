@@ -1,5 +1,9 @@
+package pl.fox.grapher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Graph {
 
@@ -10,14 +14,25 @@ public class Graph {
     protected static final int MAX_CONNECTIONS = 3;
     protected static final boolean isSimple = false;
 
-    private final java.util.List<Node> nodeList;
+    private static final double GRAPH_NODE_SIZE = 8.5;
 
-    public Graph(int nodeCount, double[] distances) {
+    private java.util.List<Node> nodeList;
+
+    public Graph() {
         nodeList = new java.util.LinkedList<>();
-        initNodes(nodeCount, distances);
     }
 
-    private void initNodes(int nodeCount, double[] distances) {
+
+
+
+
+
+
+
+
+    //FOR INITIALIZING
+
+    public void initNodes(int nodeCount, double[] distances) {
         java.util.stream.IntStream.range(0, nodeCount)
                 .mapToObj(i -> new Node(String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
 
@@ -48,17 +63,27 @@ public class Graph {
                 int connections = rand.nextInt(MAX_CONNECTIONS) + 1;
 
                 for(int i = 0; i < connections; i++){
-                    Node node = nodeList.get(rand.nextInt(nodeList.size() - 1));
-                    while(node.getName().equals(n.getName()) || connList.contains(node)){
-                        node = nodeList.get(rand.nextInt(nodeList.size() - 1));
+                    int r = rand.nextInt(nodeList.size() - 1);
+                    while(nodeList.get(r).getName().equals(n.getName()) || connList.contains(nodeList.get(r))){
+                        r = rand.nextInt(nodeList.size() - 1);
                     }
-                    connList.add(node);
+                    connList.add(nodeList.get(r));
+                    nodeList.get(r).getConnections().add(n);
                 }
                 n.setConnections(connList);
             }
+            optimizeConnections();
         }
 
         LOG.info("Inited {} Nodes", nodeList.size());
+    }
+
+    private void optimizeConnections(){
+        for(Node n: nodeList){
+            LOG.info(n.toString());
+        }
+
+        LOG.info("_____________");
     }
 
     private double[] initDistances(int nodeCount) {
@@ -80,7 +105,7 @@ public class Graph {
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder();
-        sb.append("digraph G {").append("\n").append("rankdir=LR;").append("\n");
+        sb.append("digraph G {").append("\n").append("rankdir=LR;").append("\n").append("size=\"").append(GRAPH_NODE_SIZE).append("\"\n");
         if (isSimple) {
             for (Node n : nodeList) {
                 sb.append(n.getName()).append(" -> ").append(n.getNext().getName()).append("\t[ label = \"")
@@ -104,5 +129,9 @@ public class Graph {
     private void copyToClipboard(String value) {
         java.awt.datatransfer.StringSelection selection = new java.awt.datatransfer.StringSelection(value);
         java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+    }
+
+    public void setNodeList(List<Node> nodeList) {
+        this.nodeList = nodeList;
     }
 }

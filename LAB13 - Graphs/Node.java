@@ -1,4 +1,7 @@
+package pl.fox.grapher;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Node {
 
@@ -8,7 +11,7 @@ public class Node {
     private Node next;
     private double distanceToNext;
 
-    private java.util.List<Node> connections; //Double as distance, Node as Node :)
+    private java.util.List<Node> connections = new ArrayList<>(); //Double as distance, Node as Node :)
 
     public Node(String name) {
         this.name = name;
@@ -67,12 +70,6 @@ public class Node {
     }
 
     public String getConnNames(){
-        StringBuilder sb = new StringBuilder();
-        for(Node n : connections){
-            sb.append(" (").append(n.getName()).append(" )");
-        }
-        sb.append("\n");
-
-        return sb.toString();
+        return connections.stream().map(n -> "(" + n.getName() + ")").collect(Collectors.joining("", "", " "));
     }
 }
