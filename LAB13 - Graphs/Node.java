@@ -8,7 +8,7 @@ public class Node {
     private Node next;
     private double distanceToNext;
 
-    private java.util.Map<Double, Node> connections; //Double as distance, Node as Node :)
+    private java.util.List<Node> connections; //Double as distance, Node as Node :)
 
     public Node(String name) {
         this.name = name;
@@ -58,17 +58,17 @@ public class Node {
     }
 
     //EXPERIMENTAL
-    public java.util.Map<Double, Node> getConnections() {
+    public java.util.List<Node> getConnections() {
         return connections;
     }
 
-    public void setConnections(java.util.Map<Double, Node> connections) {
+    public void setConnections(java.util.List<Node> connections) {
         this.connections = connections;
     }
 
     public String getConnNames(){
         StringBuilder sb = new StringBuilder();
-        for(Node n : connections.values()){
+        for(Node n : connections){
             sb.append(" (").append(n.getName()).append(" )");
         }
         sb.append("\n");

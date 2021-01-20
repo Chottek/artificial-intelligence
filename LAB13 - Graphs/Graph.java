@@ -41,33 +41,25 @@ public class Graph {
             }
         } else {
             java.util.Random rand = new java.util.Random();
-            java.util.Map<Double, Node> connMap;
+            java.util.List<Node> connList;
 
             for(Node n : nodeList){
-                connMap = new java.util.HashMap<>();
+                connList = new java.util.ArrayList<>();
                 int connections = rand.nextInt(MAX_CONNECTIONS) + 1;
 
                 for(int i = 0; i < connections; i++){
                     Node node = nodeList.get(rand.nextInt(nodeList.size() - 1));
-                    while(node.getName().equals(n.getName())){
+                    while(node.getName().equals(n.getName()) || connList.contains(node)){
                         node = nodeList.get(rand.nextInt(nodeList.size() - 1));
                     }
-                    connMap.put(randomizeDouble(), node);
+                    connList.add(node);
                 }
-                n.setConnections(connMap);
+                n.setConnections(connList);
             }
         }
 
         LOG.info("Inited {} Nodes", nodeList.size());
     }
-
-//    private void optimiseConnections(){
-//        for(Node n : nodeList){
-//            for(Node s: n.getConnections().values()){
-//
-//            }
-//        }
-//    }
 
     private double[] initDistances(int nodeCount) {
         return java.util.stream.IntStream.range(0, nodeCount)
@@ -96,7 +88,7 @@ public class Graph {
             }
         }else{
             for(Node n: nodeList){
-                for(Node s: n.getConnections().values()){
+                for(Node s: n.getConnections()){
                     sb.append(n.getName()).append(" -> ").append(s.getName()).append("\n");
                 }
             }
