@@ -1,8 +1,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.stream.IntStream;
-
 public class Graph {
 
     private static final Logger LOG = LoggerFactory.getLogger(Graph.class);
@@ -20,15 +18,15 @@ public class Graph {
     }
 
     private void initNodes(int nodeCount, double[] distances) {
-        if (distances == null || distances.length < nodeCount) {
-            LOG.error("Distances input is either null or not long enough to proceed, generating random array!");
-            distances = initDistances(nodeCount);
-        }
-
         java.util.stream.IntStream.range(0, nodeCount)
                 .mapToObj(i -> new Node(String.valueOf(i))).forEach(nodeList::add);  //Initializing Nodes
 
         if (isSimple) {
+            if (distances == null || distances.length < nodeCount) {
+                LOG.error("Distances input is either null or not long enough to proceed, generating random array!");
+                distances = initDistances(nodeCount);
+            }
+
             java.util.stream.IntStream.range(0, nodeCount - 1)
                     .forEach(i -> nodeList.get(i).setNext(nodeList.get(i + 1)));   //Setting next node
 
@@ -50,20 +48,26 @@ public class Graph {
                 int connections = rand.nextInt(MAX_CONNECTIONS) + 1;
 
                 for(int i = 0; i < connections; i++){
-                    connMap.put(randomizeDouble(), nodeList.get(rand.nextInt(nodeList.size() - 1)));
+                    Node node = nodeList.get(rand.nextInt(nodeList.size() - 1));
+                    while(node.getName().equals(n.getName())){
+                        node = nodeList.get(rand.nextInt(nodeList.size() - 1));
+                    }
+                    connMap.put(randomizeDouble(), node);
                 }
-
                 n.setConnections(connMap);
-                LOG.info("{} -> {}", connMap.size(), n.getConnections().size());
             }
-        }
-
-        for(Node n: nodeList){
-            LOG.info("Connections of {} : {}",n.getName(), n.getConnections().size());
         }
 
         LOG.info("Inited {} Nodes", nodeList.size());
     }
+
+//    private void optimiseConnections(){
+//        for(Node n : nodeList){
+//            for(Node s: n.getConnections().values()){
+//
+//            }
+//        }
+//    }
 
     private double[] initDistances(int nodeCount) {
         return java.util.stream.IntStream.range(0, nodeCount)
