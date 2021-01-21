@@ -23,3 +23,9 @@ Update: Fixed some relations between Nodes, so node won't connect twice
  to the same node and it won't connect to itself
  
 ![Alt text](outputs/output2.png?raw=true "Generated graph output 3")
+
+---
+
+Added graph initialization from file
+
+![Alt text](outputs/output3.png?raw=true "Generated graph output 4")

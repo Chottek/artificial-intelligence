@@ -3,8 +3,6 @@ package pl.fox.grapher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 public class Graph {
 
     private static final Logger LOG = LoggerFactory.getLogger(Graph.class);
@@ -22,15 +20,6 @@ public class Graph {
         nodeList = new java.util.LinkedList<>();
     }
 
-
-
-
-
-
-
-
-
-    //FOR INITIALIZING
 
     public void initNodes(int nodeCount, double[] distances) {
         java.util.stream.IntStream.range(0, nodeCount)
@@ -112,6 +101,7 @@ public class Graph {
                         .append(n.getDistanceToNext()).append("\" ]").append("\n");
             }
         }else{
+            sb.append("node [shape = circle];\n");
             for(Node n: nodeList){
                 for(Node s: n.getConnections()){
                     sb.append(n.getName()).append(" -> ").append(s.getName()).append("\n");
@@ -131,7 +121,7 @@ public class Graph {
         java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
 
-    public void setNodeList(List<Node> nodeList) {
+    public void setNodeList(java.util.List<Node> nodeList) {
         this.nodeList = nodeList;
     }
 }

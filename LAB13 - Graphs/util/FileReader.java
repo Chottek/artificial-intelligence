@@ -8,8 +8,9 @@ public class FileReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileReader.class);
 
+    private static final String EXTENSION = ".graph";
+
     private final java.io.File file;
-    private final String EXTENSION = ".graph";
 
     public FileReader(String pathToFile){
         file = new java.io.File(pathToFile);
@@ -18,7 +19,7 @@ public class FileReader {
     public java.util.List<Node> readFile(){
         if(!file.getName().endsWith(EXTENSION)){
             LOG.error("Wrong extension of input file!");
-            return new java.util.ArrayList<>();
+            return new java.util.LinkedList<>();
         }
 
         try{
@@ -39,12 +40,12 @@ public class FileReader {
                     String[] names = s.split("to");
                     Node n = new Node(names[0].replaceAll("!", ""));
                     Node n1 = new Node(names[1]);
-
+                    n.getConnections().add(n1);
+                    n1.getConnections().add(n);
                     nodes.add(n);
                     nodes.add(n1);
                 }
             }
-
             return nodes;
         }catch(java.io.FileNotFoundException f){
             LOG.error("There was an error reading file!");
@@ -52,9 +53,4 @@ public class FileReader {
 
         return new java.util.ArrayList<>();
     }
-
-    private void checkFile(){
-
-    }
-
 }
